@@ -19,8 +19,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserIdentityService.Domain"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserIdentityService.Infrastructure", "src\Infrastructure\UserIdentityService.Infrastructure\UserIdentityService.Infrastructure.csproj", "{669962EB-D1A7-4530-92A6-32FB89AD39A3}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{1B5C580B-26A8-4547-BDBA-1CF4EC76C6E8}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
