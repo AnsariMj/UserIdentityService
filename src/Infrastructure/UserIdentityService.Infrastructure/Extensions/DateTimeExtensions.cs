@@ -1,4 +1,4 @@
-﻿using UserIdentityService.Application.Interfaces;
+﻿using UserIdentityService.Application.Common.Interfaces;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace UserIdentityService.Infrastructure.Extensions;

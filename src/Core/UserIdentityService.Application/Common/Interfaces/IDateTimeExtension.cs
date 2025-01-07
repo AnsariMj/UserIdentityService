@@ -1,6 +1,6 @@
 ﻿using UserIdentityService.Domain.Interfaces;
 
-namespace UserIdentityService.Application.Interfaces;
+namespace UserIdentityService.Application.Common.Interfaces;
 
 public interface IDateTimeExtension : IScopedService
 {
