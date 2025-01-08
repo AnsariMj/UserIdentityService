@@ -1,11 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using Org.BouncyCastle.Asn1.Ocsp;
 using UserIdentityService.Application.Common;
 using UserIdentityService.Application.Common.Interfaces;
 using UserIdentityService.Application.Common.Services;
-using static System.Net.WebRequestMethods;
 
 namespace UserIdentityService.Application.Handlers.Authentication.Register;
 
@@ -27,7 +25,13 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegiserCo
     private readonly IMailKitEmailService _emailService;
 
 
-    public RegisterCommandHandler(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, SignInManager<IdentityUser> signInManager, IConfiguration configuration, IMailKitEmailService emailService)
+    public RegisterCommandHandler(
+        UserManager<IdentityUser> userManager,
+        RoleManager<IdentityRole> roleManager,
+        SignInManager<IdentityUser> signInManager,
+        IConfiguration configuration,
+        IMailKitEmailService emailService
+        )
     {
         _userManager = userManager;
         _roleManager = roleManager;
@@ -92,7 +96,7 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegiserCo
             var encodedEmail = Uri.EscapeDataString(user.Email);
             var confirmationLink = $"{appBaseUrl}/api/Auth/ConfirmEmail?token={encodedToken}&email={encodedEmail}";
 
-            //Sending confrimation email to specific user
+            //Sending confirmation email to specific user
             var message = new Message(new string[] { user.Email }, "Confirmation email link", confirmationLink);
             _emailService.SendEmail(message);
 
