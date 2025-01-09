@@ -4,12 +4,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using UserIdentityService.Application.Common.Interfaces;
 using UserIdentityService.Infrastructure.Persistence;
-using SendGrid.Extensions.DependencyInjection;
-using SendGrid.Helpers.Reliability;
 using UserIdentityService.Infrastructure.Services.EmailService;
-using NETCore.MailKit.Core;
-using MimeKit.Cryptography;
 using UserIdentityService.Application.Common.Models;
+using UserIdentityService.Infrastructure.Services;
 
 namespace UserIdentityService.Infrastructure.Extensions;
 
@@ -32,6 +29,8 @@ public static class ServiceExtension
         // Add Config for Required Email
         services.Configure<IdentityOptions>(opts => opts.SignIn.RequireConfirmedEmail = true);
         //services.AddIdentityApiEndpoints<RegisterUser>().AddEntityFrameworkStores<ApplicationDbContext>();
+
+        services.AddScoped<ITokenGenerator, TokenGenerator>();
 
         return services;
     }

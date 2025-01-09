@@ -1,13 +1,12 @@
 ﻿using UserIdentityService.Application.Common.Interfaces;
-using Microsoft.Extensions.Configuration;
+using UserIdentityService.Application.Common.Services;
 using System.IdentityModel.Tokens.Jwt;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
-using System.Text;
 using MediatR;
 
-namespace UserIdentityService.Application.Handlers.Authentication.Login;
+namespace UserIdentityService.Application.Handlers.Authentication.Login.LoginWithoutOtp;
 
 public class LoginCommand : IRequest<LoginCommandDto>
 {
@@ -20,22 +19,45 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginCommandDto
     private readonly UserManager<IdentityUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly SignInManager<IdentityUser> _signInManager;
-    private readonly IConfiguration _configuration;
     private readonly IMailKitEmailService _emailService;
+    private readonly ITokenGenerator _tokenGenerator;
 
-    public LoginCommandHandler(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, SignInManager<IdentityUser> signInManager, IConfiguration configuration, IMailKitEmailService emailService)
+    public LoginCommandHandler(
+        UserManager<IdentityUser> userManager,
+        RoleManager<IdentityRole> roleManager,
+        SignInManager<IdentityUser> signInManager,
+        IMailKitEmailService emailService,
+        ITokenGenerator tokenGenerator)
     {
         _userManager = userManager;
         _roleManager = roleManager;
         _signInManager = signInManager;
-        _configuration = configuration;
         _emailService = emailService;
+        _tokenGenerator = tokenGenerator;
     }
 
     public async Task<LoginCommandDto> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
         //Checking the User Exist
         var user = await _userManager.FindByEmailAsync(request.Email);
+
+        //If Two factored enabled
+        if (user.TwoFactorEnabled)
+        {
+            await _signInManager.SignOutAsync();
+            await _signInManager.PasswordSignInAsync(user, request.Password, false, true);
+            var otp = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
+
+            var message = new Message(new string[] { user.Email }, "Confirmation email link", otp);
+            _emailService.SendEmail(message);
+
+            return new LoginCommandDto
+            {
+                Message = $"We have send OTP to {request.Email}, Please Verify!",
+                Status = "Success",
+            };
+
+        }
 
         //Checking valid Password
         if (user != null && await _userManager.CheckPasswordAsync(user, request.Password))
@@ -56,7 +78,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginCommandDto
             }
 
             //generate token with claims
-            var jwtToken = GetToken(claimList);
+            var jwtToken = _tokenGenerator.GetToken(claimList);
 
             var token = new
             {
@@ -66,32 +88,16 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginCommandDto
 
             return new LoginCommandDto
             {
-                Message = "User Login Successfully",
+                Message = $"{StatusCodes.Status200OK} User Login Successfully",
                 Status = "Success",
                 Token = $"{token}"
             };
         }
+
         return new LoginCommandDto
         {
             Message = "User Does't exists",
             Status = "Error"
         };
-    }
-
-    //Generating JWT Token
-    private JwtSecurityToken GetToken(List<Claim> claimList)
-    {
-        var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
-        var signingCredential = new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256);
-
-        var token = new JwtSecurityToken
-        (
-            issuer: _configuration["JWT:ValidIssuer"],
-            audience: _configuration["JWT:ValidAudience"],
-            expires: DateTime.Now.AddHours(1),
-            claims: claimList,
-            signingCredentials: signingCredential
-        );
-        return token;
     }
 }
