@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UserIdentityService.API.Controllers.BaseController;
-using UserIdentityService.Application.Handlers.Authentication.Login;
+using UserIdentityService.Application.Handlers.Authentication.Login.LoginWithOtp;
+using UserIdentityService.Application.Handlers.Authentication.Login.LoginWithoutOtp;
 using UserIdentityService.Application.Handlers.Authentication.Register;
 using UserIdentityService.Application.Handlers.ConfirmationEmail;
 
@@ -17,7 +18,7 @@ public class AuthController : ApiController
     [ProducesResponseType(typeof(string), 400)]
     [ProducesResponseType(404)]
     [HttpPost("Register")]
-    public async Task<ActionResult<RegisterCommand>> Register([FromBody] RegisterCommand command)
+    public async Task<ActionResult<RegisterCommand>> Register([FromQuery] RegisterCommand command)
     {
         var response = await Mediator.Send(command);
         return Ok(response);
@@ -29,9 +30,18 @@ public class AuthController : ApiController
     [ProducesResponseType(typeof(string), 400)]
     [ProducesResponseType(404)]
     [HttpPost("login")]
-    public async Task<ActionResult<LoginCommand>> Login([FromBody] LoginCommand loginCommand, CancellationToken cancellationToken)
+    public async Task<ActionResult<LoginCommand>> Login([FromQuery] LoginCommand loginCommand, CancellationToken cancellationToken)
     {
         var response = await Mediator.Send(loginCommand);
+        return Ok(response);
+    }
+
+    [AllowAnonymous]
+    [Produces("application/json")]
+    [HttpPost("login-2FA")]
+    public async Task<ActionResult<LoginOtpCommand>> LoginWithOtp([FromQuery] LoginOtpCommand LoginOtpCommand, CancellationToken cancellationToken)
+    {
+        var response = await Mediator.Send(LoginOtpCommand);
         return Ok(response);
     }
 
