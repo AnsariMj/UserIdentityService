@@ -28,6 +28,8 @@ public static class ServiceExtension
         services.AddEmailServices(configuration);
         // Add Config for Required Email
         services.Configure<IdentityOptions>(opts => opts.SignIn.RequireConfirmedEmail = true);
+        services.Configure<DataProtectionTokenProviderOptions>(options => options.TokenLifespan = TimeSpan.FromHours(10));
+
         //services.AddIdentityApiEndpoints<RegisterUser>().AddEntityFrameworkStores<ApplicationDbContext>();
 
         services.AddScoped<ITokenGenerator, TokenGenerator>();

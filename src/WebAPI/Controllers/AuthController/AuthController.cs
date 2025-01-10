@@ -1,9 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SendGrid.Helpers.Errors.Model;
 using UserIdentityService.API.Controllers.BaseController;
+using UserIdentityService.Application.Handlers.Authentication.ChangePassword.ForgetPassword;
+using UserIdentityService.Application.Handlers.Authentication.ChangePassword.RestPassword;
 using UserIdentityService.Application.Handlers.Authentication.Login.LoginWithOtp;
 using UserIdentityService.Application.Handlers.Authentication.Login.LoginWithoutOtp;
 using UserIdentityService.Application.Handlers.Authentication.Register;
+using UserIdentityService.Application.Handlers.Authentication.TwoFactorEnable_Disable;
 using UserIdentityService.Application.Handlers.ConfirmationEmail;
 
 namespace UserIdentityService.API.Controllers.AuthController;
@@ -42,6 +46,72 @@ public class AuthController : ApiController
     public async Task<ActionResult<LoginOtpCommand>> LoginWithOtp([FromQuery] LoginOtpCommand LoginOtpCommand, CancellationToken cancellationToken)
     {
         var response = await Mediator.Send(LoginOtpCommand);
+        return Ok(response);
+    }
+
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(bool), 200)]
+    [ProducesResponseType(typeof(string), 400)]
+    [ProducesResponseType(404)]
+    [HttpPost("Update-2FA")]
+    public async Task<ActionResult<Update2FACommand>> Update2FA([FromQuery] Update2FACommand command, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var response = await Mediator.Send(command, cancellationToken);
+            return Ok(response);
+        }
+        catch (NotFoundException)
+        {
+            return NotFound();
+        }
+        catch (BadRequestException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(bool), 200)]
+    [ProducesResponseType(typeof(string), 400)]
+    [ProducesResponseType(404)]
+    [HttpPost("Check-2FA")]
+    public async Task<ActionResult<Get2FAQuery>> Check2FAStatus([FromQuery] Get2FAQuery command, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var response = await Mediator.Send(command, cancellationToken);
+            return Ok(response);
+        }
+        catch (NotFoundException)
+        {
+            return NotFound();
+        }
+        catch (BadRequestException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(bool), 200)]
+    [ProducesResponseType(typeof(string), 400)]
+    [ProducesResponseType(404)]
+    [HttpPost("forget-password")]
+    public async Task<ActionResult<ForgetPassword>> ForgetPassword([FromQuery] ForgetPassword command, CancellationToken cancellationToken)
+    {
+        var response = await Mediator.Send(command, cancellationToken);
+        return Ok(response);
+    }
+
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(bool), 200)]
+    [ProducesResponseType(typeof(string), 400)]
+    [ProducesResponseType(404)]
+    [HttpPost("reset-password")]
+    public async Task<ActionResult<RestPassword>> RestPassword([FromQuery] RestPassword restPasswordCommand, CancellationToken cancellationToken)
+    {
+        var response = await Mediator.Send(restPasswordCommand, cancellationToken);
         return Ok(response);
     }
 
