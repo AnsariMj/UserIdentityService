@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using UserIdentityService.Application.Common;
 
-namespace UserIdentityService.Application.Handlers.ConfirmationEmail;
+namespace UserIdentityService.Application.Handlers.Authentication.ConfirmationEmail;
 
 public class ConfirmEmailCommand : IRequest<Response>
 {

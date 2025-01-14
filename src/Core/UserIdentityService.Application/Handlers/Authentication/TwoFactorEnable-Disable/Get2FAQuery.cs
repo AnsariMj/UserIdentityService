@@ -13,7 +13,7 @@ public class Get2FAQueryHandler : IRequestHandler<Get2FAQuery, TwoFAResponseDto>
     private readonly UserManager<IdentityUser> _userManager;
 
     public Get2FAQueryHandler(UserManager<IdentityUser> userManager)
-    {
+     {
         _userManager = userManager;
     }
 
@@ -21,7 +21,7 @@ public class Get2FAQueryHandler : IRequestHandler<Get2FAQuery, TwoFAResponseDto>
     {
         var user = await _userManager.FindByEmailAsync(request.Email);
         if (user == null)
-        {
+        { 
             return new TwoFAResponseDto
             {
                 Success = false,
