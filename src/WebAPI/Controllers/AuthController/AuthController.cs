@@ -4,11 +4,11 @@ using SendGrid.Helpers.Errors.Model;
 using UserIdentityService.API.Controllers.BaseController;
 using UserIdentityService.Application.Handlers.Authentication.ChangePassword.ForgetPassword;
 using UserIdentityService.Application.Handlers.Authentication.ChangePassword.RestPassword;
+using UserIdentityService.Application.Handlers.Authentication.ConfirmationEmail;
 using UserIdentityService.Application.Handlers.Authentication.Login.LoginWithOtp;
 using UserIdentityService.Application.Handlers.Authentication.Login.LoginWithoutOtp;
 using UserIdentityService.Application.Handlers.Authentication.Register;
 using UserIdentityService.Application.Handlers.Authentication.TwoFactorEnable_Disable;
-using UserIdentityService.Application.Handlers.ConfirmationEmail;
 
 namespace UserIdentityService.API.Controllers.AuthController;
 
