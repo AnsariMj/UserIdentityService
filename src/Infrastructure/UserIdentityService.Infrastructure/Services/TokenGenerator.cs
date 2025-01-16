@@ -20,12 +20,12 @@ public class TokenGenerator : ITokenGenerator
     {
         var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
         var signingCredential = new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256);
-
+        var tokenExpiryTime = int.TryParse(_configuration["JWT:TokenExpiryTime"], out var TokenExpiryTime);
         var token = new JwtSecurityToken
         (
             issuer: _configuration["JWT:ValidIssuer"],
             audience: _configuration["JWT:ValidAudience"],
-            expires: DateTime.Now.AddHours(1),
+            expires: DateTime.Now.AddMinutes(TokenExpiryTime),
             claims: claimList,
             signingCredentials: signingCredential
         );

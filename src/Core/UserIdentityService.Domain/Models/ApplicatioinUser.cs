@@ -4,6 +4,6 @@ namespace UserIdentityService.Domain.Models;
 
 public class ApplicatioinUser : IdentityUser
 {
-    public string RefreshToekn { get; set; }
-    public DateTime RefreshToeknExpiry { get; set; }
+    public string? RefreshToekn { get; set; }
+    public DateTime? RefreshToeknExpiry { get; set; }
 }
