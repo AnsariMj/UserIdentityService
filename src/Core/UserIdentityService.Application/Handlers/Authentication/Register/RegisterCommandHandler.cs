@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using UserIdentityService.Application.Common;
 using UserIdentityService.Application.Common.Interfaces;
 using UserIdentityService.Application.Common.Services;
+using UserIdentityService.Domain.Models;
 
 namespace UserIdentityService.Application.Handlers.Authentication.Register;
 
@@ -18,17 +19,17 @@ public class RegisterCommand : IRequest<RegiserCommandDto>
 public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegiserCommandDto>
 {
 
-    private readonly UserManager<IdentityUser> _userManager;
+    private readonly UserManager<ApplicatioinUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
-    private readonly SignInManager<IdentityUser> _signInManager;
+    private readonly SignInManager<ApplicatioinUser> _signInManager;
     private readonly IConfiguration _configuration;
     private readonly IMailKitEmailService _emailService;
 
 
     public RegisterCommandHandler(
-        UserManager<IdentityUser> userManager,
+        UserManager<ApplicatioinUser> userManager,
         RoleManager<IdentityRole> roleManager,
-        SignInManager<IdentityUser> signInManager,
+        SignInManager<ApplicatioinUser> signInManager,
         IConfiguration configuration,
         IMailKitEmailService emailService
         )
@@ -58,7 +59,7 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegiserCo
         }
 
         // Add the user to the database
-        IdentityUser user = new()
+        ApplicatioinUser user = new()
         {
             UserName = request.Username,
             Email = request.Email,

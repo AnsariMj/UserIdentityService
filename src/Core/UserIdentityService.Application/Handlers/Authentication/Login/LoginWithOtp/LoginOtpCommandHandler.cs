@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using UserIdentityService.Application.Handlers.Authentication.Login.LoginWithoutOtp;
 using Microsoft.AspNetCore.Http;
+using UserIdentityService.Domain.Models;
 
 namespace UserIdentityService.Application.Handlers.Authentication.Login.LoginWithOtp;
 
@@ -16,13 +17,13 @@ public class LoginOtpCommand : IRequest<LoginOtpCommandDto>
 }
 public class LoginOtpCommandHandler : IRequestHandler<LoginOtpCommand, LoginOtpCommandDto>
 {
-    private readonly UserManager<IdentityUser> _userManager;
+    private readonly UserManager<ApplicatioinUser> _userManager;
     private readonly IMailKitEmailService _emailService;
-    private readonly SignInManager<IdentityUser> _signInManager;
+    private readonly SignInManager<ApplicatioinUser> _signInManager;
     private readonly ITokenGenerator _TokenGenerator;
 
 
-    public LoginOtpCommandHandler(UserManager<IdentityUser> userManager, IMailKitEmailService emailService, SignInManager<IdentityUser> signInManager, ITokenGenerator TokenGenerator)
+    public LoginOtpCommandHandler(UserManager<ApplicatioinUser> userManager, IMailKitEmailService emailService, SignInManager<ApplicatioinUser> signInManager, ITokenGenerator TokenGenerator)
     {
         _userManager = userManager;
         _emailService = emailService;

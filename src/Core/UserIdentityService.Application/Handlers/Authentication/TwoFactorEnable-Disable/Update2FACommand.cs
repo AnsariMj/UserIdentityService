@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
+using UserIdentityService.Domain.Models;
 
 namespace UserIdentityService.Application.Handlers.Authentication.TwoFactorEnable_Disable;
 public class Update2FACommand : IRequest<TwoFAResponseDto>
@@ -9,9 +10,9 @@ public class Update2FACommand : IRequest<TwoFAResponseDto>
 }
 public class Update2FACommandHandler : IRequestHandler<Update2FACommand, TwoFAResponseDto>
 {
-    private readonly UserManager<IdentityUser> _userManager;
+    private readonly UserManager<ApplicatioinUser> _userManager;
 
-    public Update2FACommandHandler(UserManager<IdentityUser> userManager)
+    public Update2FACommandHandler(UserManager<ApplicatioinUser> userManager)
     {
         _userManager = userManager;
     }

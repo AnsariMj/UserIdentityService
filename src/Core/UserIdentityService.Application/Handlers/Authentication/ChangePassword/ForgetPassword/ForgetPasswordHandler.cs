@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using UserIdentityService.Application.Common.Interfaces;
 using UserIdentityService.Application.Common.Services;
+using UserIdentityService.Domain.Models;
 
 namespace UserIdentityService.Application.Handlers.Authentication.ChangePassword.ForgetPassword;
 
@@ -13,11 +14,11 @@ public class ForgetPassword : IRequest<ForgetPasswordDto>
 }
 public class ForgetPasswordHandler : IRequestHandler<ForgetPassword, ForgetPasswordDto>
 {
-    private readonly UserManager<IdentityUser> _userManager;
+    private readonly UserManager<ApplicatioinUser> _userManager;
     private readonly IConfiguration _configuration;
     private readonly IMailKitEmailService _emailService;
 
-    public ForgetPasswordHandler(UserManager<IdentityUser> userManager, IConfiguration configuration, IMailKitEmailService emailService)
+    public ForgetPasswordHandler(UserManager<ApplicatioinUser> userManager, IConfiguration configuration, IMailKitEmailService emailService)
     {
         _userManager = userManager;
         _configuration = configuration;
