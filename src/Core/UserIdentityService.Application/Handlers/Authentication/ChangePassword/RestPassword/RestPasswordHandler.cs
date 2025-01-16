@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using UserIdentityService.Domain.Models;
 
 namespace UserIdentityService.Application.Handlers.Authentication.ChangePassword.RestPassword;
 
@@ -12,9 +13,9 @@ public class RestPassword : IRequest<ResetPasswordDto>
 }
 public class RestPasswordHandler : IRequestHandler<RestPassword, ResetPasswordDto>
 {
-    private readonly UserManager<IdentityUser> _userManager;
+    private readonly UserManager<ApplicatioinUser> _userManager;
 
-    public RestPasswordHandler(UserManager<IdentityUser> userManager)
+    public RestPasswordHandler(UserManager<ApplicatioinUser> userManager)
     {
         _userManager = userManager;
     }

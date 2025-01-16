@@ -7,6 +7,7 @@ using UserIdentityService.Infrastructure.Persistence;
 using UserIdentityService.Infrastructure.Services.EmailService;
 using UserIdentityService.Application.Common.Models;
 using UserIdentityService.Infrastructure.Services;
+using UserIdentityService.Domain.Models;
 
 namespace UserIdentityService.Infrastructure.Extensions;
 
@@ -19,7 +20,7 @@ public static class ServiceExtension
         services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
         services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
 
-        services.AddIdentity<IdentityUser, IdentityRole>()
+        services.AddIdentity<ApplicatioinUser, IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 

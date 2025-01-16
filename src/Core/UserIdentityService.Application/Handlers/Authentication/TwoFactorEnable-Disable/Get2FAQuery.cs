@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
+using UserIdentityService.Domain.Models;
 
 namespace UserIdentityService.Application.Handlers.Authentication.TwoFactorEnable_Disable;
 
@@ -10,9 +11,9 @@ public class Get2FAQuery : IRequest<TwoFAResponseDto>
 
 public class Get2FAQueryHandler : IRequestHandler<Get2FAQuery, TwoFAResponseDto>
 {
-    private readonly UserManager<IdentityUser> _userManager;
+    private readonly UserManager<ApplicatioinUser> _userManager;
 
-    public Get2FAQueryHandler(UserManager<IdentityUser> userManager)
+    public Get2FAQueryHandler(UserManager<ApplicatioinUser> userManager)
      {
         _userManager = userManager;
     }

@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
 using UserIdentityService.Application.Common;
+using UserIdentityService.Domain.Models;
 
 namespace UserIdentityService.Application.Handlers.Authentication.ConfirmationEmail;
 
@@ -12,9 +13,9 @@ public class ConfirmEmailCommand : IRequest<Response>
 
 public class ConfirmEmailCommandHandler : IRequestHandler<ConfirmEmailCommand, Response>
 {
-    private readonly UserManager<IdentityUser> _userManager;
+    private readonly UserManager<ApplicatioinUser> _userManager;
 
-    public ConfirmEmailCommandHandler(UserManager<IdentityUser> userManager)
+    public ConfirmEmailCommandHandler(UserManager<ApplicatioinUser> userManager)
     {
         _userManager = userManager;
     }

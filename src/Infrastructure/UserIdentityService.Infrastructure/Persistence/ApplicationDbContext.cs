@@ -3,10 +3,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using UserIdentityService.Application.Common.Interfaces;
+using UserIdentityService.Domain.Models;
 
 namespace UserIdentityService.Infrastructure.Persistence;
 
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<IdentityUser>(options), IApplicationDbContext
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<ApplicatioinUser>(options), IApplicationDbContext
 {
     protected override void OnModelCreating(ModelBuilder builder)
     {

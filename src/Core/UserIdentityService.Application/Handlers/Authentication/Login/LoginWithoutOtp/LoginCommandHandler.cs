@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using MediatR;
+using UserIdentityService.Domain.Models;
 
 namespace UserIdentityService.Application.Handlers.Authentication.Login.LoginWithoutOtp;
 
@@ -16,16 +17,16 @@ public class LoginCommand : IRequest<LoginCommandDto>
 
 public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginCommandDto>
 {
-    private readonly UserManager<IdentityUser> _userManager;
+    private readonly UserManager<ApplicatioinUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
-    private readonly SignInManager<IdentityUser> _signInManager;
+    private readonly SignInManager<ApplicatioinUser> _signInManager;
     private readonly IMailKitEmailService _emailService;
     private readonly ITokenGenerator _tokenGenerator;
 
     public LoginCommandHandler(
-        UserManager<IdentityUser> userManager,
+        UserManager<ApplicatioinUser> userManager,
         RoleManager<IdentityRole> roleManager,
-        SignInManager<IdentityUser> signInManager,
+        SignInManager<ApplicatioinUser> signInManager,
         IMailKitEmailService emailService,
         ITokenGenerator tokenGenerator)
     {
