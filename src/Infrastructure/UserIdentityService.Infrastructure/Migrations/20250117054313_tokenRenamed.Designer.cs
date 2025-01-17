@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UserIdentityService.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using UserIdentityService.Infrastructure.Persistence;
 namespace UserIdentityService.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250117054313_tokenRenamed")]
+    partial class tokenRenamed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,21 +54,21 @@ namespace UserIdentityService.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "bf2591cc-07d3-4ead-8693-98e329bbe0a9",
+                            Id = "01f38761-1b40-4664-8268-7e7bd2071b1f",
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "Admin"
                         },
                         new
                         {
-                            Id = "9e17c5b6-2e43-4223-a347-c1d772d5dbc2",
+                            Id = "bbbf04c6-b8d5-4a99-b20d-59048bde8895",
                             ConcurrencyStamp = "2",
                             Name = "User",
                             NormalizedName = "User"
                         },
                         new
                         {
-                            Id = "20402d8c-6b3c-42c6-8457-0c1110846616",
+                            Id = "bbc85f45-1be2-4396-9a3d-f0fa00b30d8a",
                             ConcurrencyStamp = "3",
                             Name = "HR",
                             NormalizedName = "HR"
@@ -220,11 +223,11 @@ namespace UserIdentityService.Infrastructure.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<DateTime?>("RefreshToeknExpiry")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("RefreshToken")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("RefreshTokenExpiry")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");

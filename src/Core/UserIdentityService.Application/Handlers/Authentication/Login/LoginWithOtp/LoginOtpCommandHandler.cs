@@ -1,10 +1,11 @@
-﻿using UserIdentityService.Application.Common.Interfaces;
-using Microsoft.AspNetCore.Identity;
-using MediatR;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.IdentityModel.Tokens.Jwt;
-using UserIdentityService.Application.Handlers.Authentication.Login.LoginWithoutOtp;
+using System.Security.Cryptography;
+using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+using UserIdentityService.Application.Common.Interfaces;
 using UserIdentityService.Domain.Models;
 
 namespace UserIdentityService.Application.Handlers.Authentication.Login.LoginWithOtp;
@@ -20,15 +21,17 @@ public class LoginOtpCommandHandler : IRequestHandler<LoginOtpCommand, LoginOtpC
     private readonly UserManager<ApplicatioinUser> _userManager;
     private readonly IMailKitEmailService _emailService;
     private readonly SignInManager<ApplicatioinUser> _signInManager;
-    private readonly ITokenGenerator _TokenGenerator;
+    private readonly ITokenGenerator _tokenGenerator;
+    private readonly IConfiguration _configuration;
 
 
-    public LoginOtpCommandHandler(UserManager<ApplicatioinUser> userManager, IMailKitEmailService emailService, SignInManager<ApplicatioinUser> signInManager, ITokenGenerator TokenGenerator)
+    public LoginOtpCommandHandler(UserManager<ApplicatioinUser> userManager, IMailKitEmailService emailService, SignInManager<ApplicatioinUser> signInManager, ITokenGenerator TokenGenerator, IConfiguration configuration)
     {
         _userManager = userManager;
         _emailService = emailService;
         _signInManager = signInManager;
-        _TokenGenerator = TokenGenerator;
+        _tokenGenerator = TokenGenerator;
+        _configuration = configuration;
     }
 
     public async Task<LoginOtpCommandDto> Handle(LoginOtpCommand request, CancellationToken cancellationToken)
@@ -39,37 +42,30 @@ public class LoginOtpCommandHandler : IRequestHandler<LoginOtpCommand, LoginOtpC
         {
             if (user != null)
             {
-                var claimList = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Email, request.Email),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                //Generating JWT Access Token
+                var accessToken = await _tokenGenerator.GetAccessToken(user);
 
-                };
+                //Generating Refresh Token
+                user.RefreshToken = _tokenGenerator.GetRefreshToken();
+                user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(int.Parse(_configuration["JWT:RefreshTokenExpiryTime"]));
 
-                var userRoles = await _userManager.GetRolesAsync(user);
-                foreach (var role in userRoles)
-                {
-                    claimList.Add(new Claim(ClaimTypes.Role, role));
-                }
-                var jwtToken = _TokenGenerator.GetToken(claimList);
-                var token = new
-                {
-                    token = new JwtSecurityTokenHandler().WriteToken(jwtToken),
-                    expiration = jwtToken.ValidTo
-                };
+                //Assigning RefreshToken and Expiry to user 
+                await _userManager.UpdateAsync(user);
+
                 return new LoginOtpCommandDto
                 {
-                    Message = "User Login Successfully",
+                    Message = $"{StatusCodes.Status200OK} User Login Successfully",
                     Status = "Success",
-                    Token = $"{token}"
+                    Token = accessToken,
+                    RefreshToken = user.RefreshToken,
+                    RefreshTokenExpiry = user.RefreshTokenExpiry,
                 };
             }
-
         }
         return new LoginOtpCommandDto
         {
             Message = $"Something Were Wrong!",
-            Status = "Errro"
+            Status = "Error"
         };
     }
 }
