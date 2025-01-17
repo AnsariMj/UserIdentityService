@@ -1,10 +1,13 @@
-﻿using UserIdentityService.Application.Common.Interfaces;
-using UserIdentityService.Application.Common.Services;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Http;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using MediatR;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using UserIdentityService.Application.Common.Interfaces;
+using UserIdentityService.Application.Common.Services;
 using UserIdentityService.Domain.Models;
 
 namespace UserIdentityService.Application.Handlers.Authentication.Login.LoginWithoutOtp;
@@ -22,19 +25,23 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginCommandDto
     private readonly SignInManager<ApplicatioinUser> _signInManager;
     private readonly IMailKitEmailService _emailService;
     private readonly ITokenGenerator _tokenGenerator;
+    private readonly IConfiguration _configuration;
 
     public LoginCommandHandler(
         UserManager<ApplicatioinUser> userManager,
         RoleManager<IdentityRole> roleManager,
         SignInManager<ApplicatioinUser> signInManager,
         IMailKitEmailService emailService,
-        ITokenGenerator tokenGenerator)
+        ITokenGenerator tokenGenerator,
+        IConfiguration configuration
+      )
     {
         _userManager = userManager;
         _roleManager = roleManager;
         _signInManager = signInManager;
         _emailService = emailService;
         _tokenGenerator = tokenGenerator;
+        _configuration = configuration;
     }
 
     public async Task<LoginCommandDto> Handle(LoginCommand request, CancellationToken cancellationToken)
@@ -63,35 +70,22 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginCommandDto
         //Checking valid Password
         if (user != null && await _userManager.CheckPasswordAsync(user, request.Password))
         {
-            //creating claim list 
-            var claimList = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, request.Email),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-            };
+            //Generating JWT Access Token
+            var accessToken = await _tokenGenerator.GetAccessToken(user);
 
-            var userRoles = await _userManager.GetRolesAsync(user);
+            //Generating Refresh Token
+            user.RefreshToken = _tokenGenerator.GetRefreshToken();
+            user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(int.Parse(_configuration["JWT:RefreshTokenExpiryTime"]));
 
-            // add roles to the list
-            foreach (var role in userRoles)
-            {
-                claimList.Add(new Claim(ClaimTypes.Role, role));
-            }
-
-            //generate token with claims
-            var jwtToken = _tokenGenerator.GetToken(claimList);
-
-            var token = new
-            {
-                token = new JwtSecurityTokenHandler().WriteToken(jwtToken),
-                expiration = jwtToken.ValidTo
-            };
-
+            //Assigning RefreshToken and Expiry to user 
+            await _userManager.UpdateAsync(user);
             return new LoginCommandDto
             {
                 Message = $"{StatusCodes.Status200OK} User Login Successfully",
                 Status = "Success",
-                Token = $"{token}"
+                Token = accessToken,
+                RefreshToken = user.RefreshToken,
+                RefreshTokenExpiry = user.RefreshTokenExpiry,
             };
         }
 

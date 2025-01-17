@@ -7,6 +7,7 @@ using UserIdentityService.Application.Handlers.Authentication.ChangePassword.Res
 using UserIdentityService.Application.Handlers.Authentication.ConfirmationEmail;
 using UserIdentityService.Application.Handlers.Authentication.Login.LoginWithOtp;
 using UserIdentityService.Application.Handlers.Authentication.Login.LoginWithoutOtp;
+using UserIdentityService.Application.Handlers.Authentication.RefreshToken;
 using UserIdentityService.Application.Handlers.Authentication.Register;
 using UserIdentityService.Application.Handlers.Authentication.TwoFactorEnable_Disable;
 
@@ -46,6 +47,15 @@ public class AuthController : ApiController
     public async Task<ActionResult<LoginOtpCommand>> LoginWithOtp([FromQuery] LoginOtpCommand LoginOtpCommand, CancellationToken cancellationToken)
     {
         var response = await Mediator.Send(LoginOtpCommand);
+        return Ok(response);
+    }
+
+    [AllowAnonymous]
+    [Produces("application/json")]
+    [HttpPost("Refresh-Token")]
+    public async Task<ActionResult<RefreshTokenCommand>> RefreshToken([FromBody] RefreshTokenCommand refreshTokenCommand, CancellationToken cancellationToken)
+    {
+        var response = await Mediator.Send(refreshTokenCommand);
         return Ok(response);
     }
 

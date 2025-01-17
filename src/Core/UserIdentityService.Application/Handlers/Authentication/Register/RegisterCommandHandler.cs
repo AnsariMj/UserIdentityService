@@ -21,7 +21,6 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegiserCo
 
     private readonly UserManager<ApplicatioinUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
-    private readonly SignInManager<ApplicatioinUser> _signInManager;
     private readonly IConfiguration _configuration;
     private readonly IMailKitEmailService _emailService;
 
@@ -29,14 +28,12 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegiserCo
     public RegisterCommandHandler(
         UserManager<ApplicatioinUser> userManager,
         RoleManager<IdentityRole> roleManager,
-        SignInManager<ApplicatioinUser> signInManager,
         IConfiguration configuration,
         IMailKitEmailService emailService
         )
     {
         _userManager = userManager;
         _roleManager = roleManager;
-        _signInManager = signInManager;
         _configuration = configuration;
         _emailService = emailService;
     }

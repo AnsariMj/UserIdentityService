@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Text;
 
 namespace UserIdentityService.API.Extensions;
 
@@ -21,8 +21,15 @@ public static class ServiceExtension
             options.RequireHttpsMetadata = false;
             options.TokenValidationParameters = new TokenValidationParameters()
             {
-                ValidateIssuer = true,
                 ValidateAudience = true,
+                ValidateIssuer = true,
+
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+
+                ClockSkew = TimeSpan.Zero,
+
+
                 ValidAudience = configuration["JWT:ValidAudience"],
                 ValidIssuer = configuration["JWT:ValidIssuer"],
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]))
