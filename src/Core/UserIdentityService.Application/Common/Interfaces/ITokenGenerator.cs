@@ -7,6 +7,5 @@ namespace UserIdentityService.Application.Common.Interfaces;
 public interface ITokenGenerator
 {
     public Task<string> GetAccessToken(ApplicatioinUser user);
-
     public string GetRefreshToken();
 }
