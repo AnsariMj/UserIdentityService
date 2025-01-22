@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using SendGrid.Helpers.Errors.Model;
 using UserIdentityService.API.Controllers.BaseController;
+using UserIdentityService.Application.Common;
 using UserIdentityService.Application.Handlers.Authentication.ChangePassword.ForgetPassword;
 using UserIdentityService.Application.Handlers.Authentication.ChangePassword.RestPassword;
 using UserIdentityService.Application.Handlers.Authentication.ConfirmationEmail;
+using UserIdentityService.Application.Handlers.Authentication.Login.ExternalLogin;
 using UserIdentityService.Application.Handlers.Authentication.Login.LoginWithOtp;
 using UserIdentityService.Application.Handlers.Authentication.Login.LoginWithoutOtp;
 using UserIdentityService.Application.Handlers.Authentication.RefreshToken;
@@ -23,7 +25,7 @@ public class AuthController : ApiController
     [ProducesResponseType(typeof(string), 400)]
     [ProducesResponseType(404)]
     [HttpPost("Register")]
-    public async Task<ActionResult<RegisterCommand>> Register([FromQuery] RegisterCommand command)
+    public async Task<ActionResult<RegiserCommandDto>> Register([FromQuery] RegisterCommand command)
     {
         var response = await Mediator.Send(command);
         return Ok(response);
@@ -35,7 +37,7 @@ public class AuthController : ApiController
     [ProducesResponseType(typeof(string), 400)]
     [ProducesResponseType(404)]
     [HttpPost("login")]
-    public async Task<ActionResult<LoginCommand>> Login([FromQuery] LoginCommand loginCommand, CancellationToken cancellationToken)
+    public async Task<ActionResult<LoginCommandDto>> Login([FromQuery] LoginCommand loginCommand, CancellationToken cancellationToken)
     {
         var response = await Mediator.Send(loginCommand);
         return Ok(response);
@@ -44,16 +46,24 @@ public class AuthController : ApiController
     [AllowAnonymous]
     [Produces("application/json")]
     [HttpPost("login-2FA")]
-    public async Task<ActionResult<LoginOtpCommand>> LoginWithOtp([FromQuery] LoginOtpCommand LoginOtpCommand, CancellationToken cancellationToken)
+    public async Task<ActionResult<LoginOtpCommandDto>> LoginWithOtp([FromQuery] LoginOtpCommand LoginOtpCommand, CancellationToken cancellationToken)
     {
         var response = await Mediator.Send(LoginOtpCommand);
         return Ok(response);
     }
 
     [AllowAnonymous]
+    [HttpPost("External-Login")]
+    public async Task<ActionResult<GoogleLoginCommandDto>> ExternalLoginCallback([FromBody] GoogleLoginCommand loginCommand, CancellationToken cancellationToken)
+    {
+        var response = await Mediator.Send(loginCommand);
+        return Ok(response);
+    }
+
+    [AllowAnonymous]
     [Produces("application/json")]
     [HttpPost("Refresh-Token")]
-    public async Task<ActionResult<RefreshTokenCommand>> RefreshToken([FromBody] RefreshTokenCommand refreshTokenCommand, CancellationToken cancellationToken)
+    public async Task<ActionResult<RefreshTokenCommandDto>> RefreshToken([FromBody] RefreshTokenCommand refreshTokenCommand, CancellationToken cancellationToken)
     {
         var response = await Mediator.Send(refreshTokenCommand);
         return Ok(response);
@@ -64,7 +74,7 @@ public class AuthController : ApiController
     [ProducesResponseType(typeof(string), 400)]
     [ProducesResponseType(404)]
     [HttpPost("Update-2FA")]
-    public async Task<ActionResult<Update2FACommand>> Update2FA([FromQuery] Update2FACommand command, CancellationToken cancellationToken)
+    public async Task<ActionResult<TwoFAResponseDto>> Update2FA([FromQuery] Update2FACommand command, CancellationToken cancellationToken)
     {
         try
         {
@@ -86,7 +96,7 @@ public class AuthController : ApiController
     [ProducesResponseType(typeof(string), 400)]
     [ProducesResponseType(404)]
     [HttpPost("Check-2FA")]
-    public async Task<ActionResult<Get2FAQuery>> Check2FAStatus([FromQuery] Get2FAQuery command, CancellationToken cancellationToken)
+    public async Task<ActionResult<TwoFAResponseDto>> Check2FAStatus([FromQuery] Get2FAQuery command, CancellationToken cancellationToken)
     {
         try
         {
@@ -108,7 +118,7 @@ public class AuthController : ApiController
     [ProducesResponseType(typeof(string), 400)]
     [ProducesResponseType(404)]
     [HttpPost("forget-password")]
-    public async Task<ActionResult<ForgetPassword>> ForgetPassword([FromQuery] ForgetPassword command, CancellationToken cancellationToken)
+    public async Task<ActionResult<ForgetPasswordDto>> ForgetPassword([FromQuery] ForgetPassword command, CancellationToken cancellationToken)
     {
         var response = await Mediator.Send(command, cancellationToken);
         return Ok(response);
@@ -119,7 +129,7 @@ public class AuthController : ApiController
     [ProducesResponseType(typeof(string), 400)]
     [ProducesResponseType(404)]
     [HttpPost("reset-password")]
-    public async Task<ActionResult<RestPassword>> RestPassword([FromQuery] RestPassword restPasswordCommand, CancellationToken cancellationToken)
+    public async Task<ActionResult<ResetPasswordDto>> RestPassword([FromQuery] RestPassword restPasswordCommand, CancellationToken cancellationToken)
     {
         var response = await Mediator.Send(restPasswordCommand, cancellationToken);
         return Ok(response);
@@ -129,7 +139,7 @@ public class AuthController : ApiController
     [Produces("application/json")]
     [ProducesResponseType(typeof(bool), 200)]
     [ProducesResponseType(typeof(string), 400)]
-    public async Task<ActionResult<ConfirmEmailCommand>> ConfirmEmail([FromQuery] ConfirmEmailCommand confirmEmailCommand, CancellationToken cancellationToken)
+    public async Task<ActionResult<Response>> ConfirmEmail([FromQuery] ConfirmEmailCommand confirmEmailCommand, CancellationToken cancellationToken)
     {
         var response = await Mediator.Send(confirmEmailCommand);
         return Ok(response);

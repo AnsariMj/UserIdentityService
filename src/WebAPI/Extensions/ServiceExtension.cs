@@ -29,11 +29,14 @@ public static class ServiceExtension
 
                 ClockSkew = TimeSpan.Zero,
 
-
                 ValidAudience = configuration["JWT:ValidAudience"],
                 ValidIssuer = configuration["JWT:ValidIssuer"],
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]))
             };
+        }).AddGoogle(options =>
+        {
+            options.ClientId = configuration["Google:ClientId"];
+            options.ClientSecret = configuration["Google:ClientSecret"];
         });
         services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -65,7 +68,15 @@ public static class ServiceExtension
         }
     });
         });
-
+        services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAll", policy =>
+            {
+                policy.AllowAnyOrigin()
+                      .AllowAnyMethod()
+                      .AllowAnyHeader();
+            });
+        });
         //services.AddSwaggerGen();
 
         return services;
