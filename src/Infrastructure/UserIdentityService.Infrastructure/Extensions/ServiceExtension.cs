@@ -28,7 +28,11 @@ public static class ServiceExtension
         //services.AddSendGrid(configuration);
         services.AddEmailServices(configuration);
         // Add Config for Required Email
-        services.Configure<IdentityOptions>(opts => opts.SignIn.RequireConfirmedEmail = true);
+        services.Configure<IdentityOptions>(opts =>
+        {
+            opts.SignIn.RequireConfirmedEmail = true;
+            opts.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+ ";
+        });
         services.Configure<DataProtectionTokenProviderOptions>(options => options.TokenLifespan = TimeSpan.FromHours(10));
 
         //services.AddIdentityApiEndpoints<RegisterUser>().AddEntityFrameworkStores<ApplicationDbContext>();
