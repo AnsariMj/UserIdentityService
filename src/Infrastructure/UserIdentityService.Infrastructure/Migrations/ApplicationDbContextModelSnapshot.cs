@@ -51,21 +51,21 @@ namespace UserIdentityService.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "bf2591cc-07d3-4ead-8693-98e329bbe0a9",
+                            Id = "08a6253a-d855-43ca-81b2-e3978a23fe98",
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "Admin"
                         },
                         new
                         {
-                            Id = "9e17c5b6-2e43-4223-a347-c1d772d5dbc2",
+                            Id = "349bd790-cac3-4f1d-b1d8-bb7b9e191407",
                             ConcurrencyStamp = "2",
                             Name = "User",
                             NormalizedName = "User"
                         },
                         new
                         {
-                            Id = "20402d8c-6b3c-42c6-8457-0c1110846616",
+                            Id = "23364e37-0856-446c-8d37-452a9dd01546",
                             ConcurrencyStamp = "3",
                             Name = "HR",
                             NormalizedName = "HR"
@@ -176,6 +176,47 @@ namespace UserIdentityService.Infrastructure.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("UserIdentityService.Domain.Entities.Blog", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AuthorName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsPublished")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("PublishedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdateAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Blogs");
                 });
 
             modelBuilder.Entity("UserIdentityService.Domain.Models.ApplicatioinUser", b =>
@@ -298,6 +339,22 @@ namespace UserIdentityService.Infrastructure.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("UserIdentityService.Domain.Entities.Blog", b =>
+                {
+                    b.HasOne("UserIdentityService.Domain.Models.ApplicatioinUser", "User")
+                        .WithMany("Blogs")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("UserIdentityService.Domain.Models.ApplicatioinUser", b =>
+                {
+                    b.Navigation("Blogs");
                 });
 #pragma warning restore 612, 618
         }

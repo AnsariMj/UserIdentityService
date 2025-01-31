@@ -3,16 +3,27 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using UserIdentityService.Application.Common.Interfaces;
+using UserIdentityService.Domain.Entities;
 using UserIdentityService.Domain.Models;
 
 namespace UserIdentityService.Infrastructure.Persistence;
 
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<ApplicatioinUser>(options), IApplicationDbContext
+public class ApplicationDbContext : IdentityDbContext<ApplicatioinUser>, IApplicationDbContext
 {
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+    {
+    }
+    public virtual DbSet<Blog> Blogs { get; set; }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
         SeedRoles(builder);
+        builder.Entity<Blog>()
+            .HasOne(b => b.User)
+            .WithMany(u => u.Blogs)
+            .HasForeignKey(b => b.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 
     private static void SeedRoles(ModelBuilder builder)
