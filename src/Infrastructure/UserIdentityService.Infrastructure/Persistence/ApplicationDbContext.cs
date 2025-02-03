@@ -13,7 +13,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicatioinUser>, IApplic
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
     }
-    public virtual DbSet<Blog> Blogs { get; set; }
+    public DbSet<Blog> Blogs { get; set; }
+    public DbSet<ApplicatioinUser> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

@@ -24,8 +24,4 @@
     <ProjectReference Include="..\UserIdentityService.Domain\UserIdentityService.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Handlers\Blogs\" />
-  </ItemGroup>
-
 </Project>
