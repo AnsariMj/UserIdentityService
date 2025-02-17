@@ -29,7 +29,16 @@ namespace UserIdentityService.API.Controllers.Blog
         [ProducesResponseType(typeof(string), 400)]
         [ProducesResponseType(404)]
         [HttpPost("Update-Blog")]
-        public async Task<Response> UpdateBlog([FromBody] UpdateBlogCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult<Response>> UpdateBlog([FromBody] UpdateBlogCommand command, CancellationToken cancellationToken)
+        {
+            var response = await Mediator.Send(command);
+            return Ok(response);
+        }
+
+        [AllowAnonymous]
+        [Produces("application/json")]
+        [HttpGet("get-blog-by-id")]
+        public async Task<ActionResult<GetBlogResponse>> GetBlogById([FromBody] GetBlogCommand command, CancellationToken cancellationToken)
         {
             var response = await Mediator.Send(command);
             return Ok(response);
