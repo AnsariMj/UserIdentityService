@@ -25,7 +25,7 @@ public class AuthController : ApiController
     [ProducesResponseType(typeof(string), 400)]
     [ProducesResponseType(404)]
     [HttpPost("Register")]
-    public async Task<ActionResult<RegiserCommandDto>> Register([FromQuery] RegisterCommand command)
+    public async Task<ActionResult<RegiserCommandDto>> Register([FromBody] RegisterCommand command)
     {
         var response = await Mediator.Send(command);
         return Ok(response);
@@ -37,7 +37,7 @@ public class AuthController : ApiController
     [ProducesResponseType(typeof(string), 400)]
     [ProducesResponseType(404)]
     [HttpPost("login")]
-    public async Task<ActionResult<LoginCommandDto>> Login([FromQuery] LoginCommand loginCommand, CancellationToken cancellationToken)
+    public async Task<ActionResult<LoginCommandDto>> Login([FromBody] LoginCommand loginCommand, CancellationToken cancellationToken)
     {
         var response = await Mediator.Send(loginCommand);
         return Ok(response);
