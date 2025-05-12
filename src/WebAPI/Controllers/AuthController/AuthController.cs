@@ -25,7 +25,7 @@ public class AuthController : ApiController
     [ProducesResponseType(typeof(string), 400)]
     [ProducesResponseType(404)]
     [HttpPost("Register")]
-    public async Task<ActionResult<RegiserCommandDto>> Register([FromBody] RegisterCommand command)
+    public async Task<ActionResult<RegiserCommandDto>> Register([FromQuery] RegisterCommand command)
     {
         var response = await Mediator.Send(command);
         return Ok(response);
