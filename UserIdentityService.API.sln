@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserIdentityService.Domain"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserIdentityService.Infrastructure", "src\Infrastructure\UserIdentityService.Infrastructure\UserIdentityService.Infrastructure.csproj", "{669962EB-D1A7-4530-92A6-32FB89AD39A3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserIdentityService.Test", "UserIdentityService.Test\UserIdentityService.Test.csproj", "{273599B0-03D6-4AD4-B8FA-B96C1ACF548B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,10 @@ Global
 		{669962EB-D1A7-4530-92A6-32FB89AD39A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{669962EB-D1A7-4530-92A6-32FB89AD39A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{669962EB-D1A7-4530-92A6-32FB89AD39A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{273599B0-03D6-4AD4-B8FA-B96C1ACF548B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{273599B0-03D6-4AD4-B8FA-B96C1ACF548B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{273599B0-03D6-4AD4-B8FA-B96C1ACF548B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{273599B0-03D6-4AD4-B8FA-B96C1ACF548B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -53,5 +59,8 @@ Global
 		{7B35A851-6EC3-40FF-9D88-39A55036AD9C} = {2C2413A9-0191-48BD-9170-08B908DE81CE}
 		{82C5C66B-FF4A-400D-9D5D-66DC8D219D9C} = {2C2413A9-0191-48BD-9170-08B908DE81CE}
 		{669962EB-D1A7-4530-92A6-32FB89AD39A3} = {A01E8A98-CA90-4FE7-9645-D59C04DD5A85}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D378D919-7ED4-4E6B-B37D-99973C7D3A37}
 	EndGlobalSection
 EndGlobal
